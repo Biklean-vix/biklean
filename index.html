@@ -206,7 +206,7 @@ document.getElementById("enviar").addEventListener("click",function(){
    else{erro.textContent="Não foi possível agendar. Tente de novo em instantes."}
    return;
   }
-  var cod=j.codigo;
+  var cod=j.codigo;origem=j.parceiro||origem;
   var linhas=[["Código",cod],["Parceiro",origem],["Serviço",sel.svc.nome],["Valor",brl(sel.svc.preco)],["Data",br(sel.data)],["Horário",sel.hora],["Cliente",nome],["Status","agendado"]];
   var msg="Olá, Biklean! Acabei de fazer um agendamento pelo site:\n\nCódigo: "+cod+"\nServiço: "+sel.svc.nome+"\nValor: "+brl(sel.svc.preco)+"\nDuração: "+sel.svc.dur+"\nData: "+br(sel.data)+"\nHorário: "+sel.hora+"\nNome: "+nome+"\nTelefone: "+tel+"\nEndereço: "+end+"\nParceiro: "+origem;
   document.getElementById("wa").href="https://wa.me/"+WHATS+"?text="+encodeURIComponent(msg);
