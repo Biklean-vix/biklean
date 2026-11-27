@@ -18,6 +18,8 @@ main{max-width:640px;margin:0 auto;padding:20px 16px 48px}
 header{padding:8px 0 18px}
 h1{font-size:1.9rem;line-height:1.1;margin:0 0 6px;font-weight:700}
 header p{margin:0;color:var(--mut)}
+.zap{display:inline-block;margin-top:12px;padding:10px 16px;border-radius:12px;background:var(--green);color:var(--onblue);font-weight:700;text-decoration:none}
+.zap:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
 .origem{display:inline-block;margin-top:10px;padding:4px 10px;border-radius:99px;background:var(--soft);font-size:.85rem}
 section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
 h2{font-size:1.1rem;margin:0 0 12px}
@@ -59,6 +61,7 @@ td{padding:5px 0;border-bottom:1px solid var(--line);vertical-align:top}td:first
 <h1>Limpeza de bike elétrica, na sua porta</h1>
 <p>Escolha o serviço, o dia e o horário. Ao final, você avisa a Biklean pelo WhatsApp.</p>
 <span class="origem" id="origem"></span>
+<div><a class="zap" href="https://wa.me/5527999008819?text=Ol%C3%A1%21%20Vim%20pelo%20site%20da%20Biklean%20e%20gostaria%20de%20tirar%20uma%20d%C3%BAvida." target="_blank" rel="noopener">Falar com a Biklean no WhatsApp</a></div>
 </header>
 
 
@@ -71,6 +74,7 @@ td{padding:5px 0;border-bottom:1px solid var(--line);vertical-align:top}td:first
 <label class="f">Telefone com DDD<input id="tel" type="tel" autocomplete="tel" placeholder="(27) 9 9999-9999"></label>
 <label class="f">Rua<input id="rua" autocomplete="address-line1"></label>
 <div class="g2"><label class="f">Número<input id="num" inputmode="numeric"></label><label class="f">CEP<input id="cep" inputmode="numeric" autocomplete="postal-code" maxlength="9" placeholder="00000-000"></label></div>
+<label class="f">Complemento (opcional)<input id="comp" autocomplete="address-line2" placeholder="Apto, bloco, ponto de referência"></label>
 <div class="g2"><label class="f">Bairro<input id="bairro"></label><label class="f">Cidade<input id="cidade" autocomplete="address-level2"></label></div>
 <label class="f">E-mail<input id="mail" type="email" autocomplete="email"></label>
 </section>
@@ -178,8 +182,9 @@ function celula(tr,k,v){var r=document.createElement("tr");var a=document.create
 document.getElementById("enviar").addEventListener("click",function(){
  var erro=document.getElementById("erro");
  var nome=campo("nome"),tel=campo("tel"),mail=campo("mail");
- var rua=campo("rua"),num=campo("num"),cep=campo("cep"),bairro=campo("bairro"),cidade=campo("cidade");
- var end=rua+", "+num+", "+bairro+", "+cidade+", CEP "+cep;
+ var rua=campo("rua"),num=campo("num"),cep=campo("cep"),bairro=campo("bairro"),cidade=campo("cidade"),comp=campo("comp");
+ var numComp=comp?num+", "+comp:num;
+ var end=rua+", "+numComp+", "+bairro+", "+cidade+", CEP "+cep;
  if(!sel.svc){erro.textContent="Escolha um serviço.";return}
  if(!sel.data){erro.textContent="Escolha um dia.";return}
  if(!sel.hora){erro.textContent="Escolha um horário.";return}
@@ -194,7 +199,7 @@ document.getElementById("enviar").addEventListener("click",function(){
  erro.textContent="";
  var btn=document.getElementById("enviar");btn.disabled=true;btn.textContent="Agendando...";
  var origem=parceiro||"direto";
- var corpo={servico:sel.svc.id,data:sel.data,hora:sel.hora,nome:nome,tel:tel,rua:rua,num:num,cep:cep,bairro:bairro,cidade:cidade,mail:mail,parceiro:parceiro};
+ var corpo={servico:sel.svc.id,data:sel.data,hora:sel.hora,nome:nome,tel:tel,rua:rua,num:numComp,cep:cep,bairro:bairro,cidade:cidade,mail:mail,parceiro:parceiro};
  fetch(API,{method:"POST",body:JSON.stringify(corpo)}).then(function(r){return r.json()}).then(function(j){
   if(!j.ok){
    btn.disabled=false;btn.textContent="Agendar";
