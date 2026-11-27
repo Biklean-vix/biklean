@@ -76,7 +76,6 @@ td{padding:5px 0;border-bottom:1px solid var(--line);vertical-align:top}td:first
 <div class="g2"><label class="f">Número<input id="num" inputmode="numeric"></label><label class="f">CEP<input id="cep" inputmode="numeric" autocomplete="postal-code" maxlength="9" placeholder="00000-000"></label></div>
 <label class="f">Complemento (opcional)<input id="comp" autocomplete="address-line2" placeholder="Apto, bloco, ponto de referência"></label>
 <div class="g2"><label class="f">Bairro<input id="bairro"></label><label class="f">Cidade<input id="cidade" autocomplete="address-level2"></label></div>
-<label class="f">E-mail<input id="mail" type="email" autocomplete="email"></label>
 </section>
 <button class="go" id="enviar" type="button">Agendar</button>
 <p class="err" id="erro" role="alert"></p>
@@ -181,7 +180,7 @@ function celula(tr,k,v){var r=document.createElement("tr");var a=document.create
 
 document.getElementById("enviar").addEventListener("click",function(){
  var erro=document.getElementById("erro");
- var nome=campo("nome"),tel=campo("tel"),mail=campo("mail");
+ var nome=campo("nome"),tel=campo("tel");
  var rua=campo("rua"),num=campo("num"),cep=campo("cep"),bairro=campo("bairro"),cidade=campo("cidade"),comp=campo("comp");
  var numComp=comp?num+", "+comp:num;
  var end=rua+", "+numComp+", "+bairro+", "+cidade+", CEP "+cep;
@@ -195,11 +194,11 @@ document.getElementById("enviar").addEventListener("click",function(){
  if(cep.replace(/\D/g,"").length!==8){erro.textContent="Informe o CEP com 8 números.";return}
  if(bairro.length<2){erro.textContent="Informe o bairro.";return}
  if(cidade.length<2){erro.textContent="Informe a cidade.";return}
- if(!/^\S+@\S+\.\S+$/.test(mail)){erro.textContent="Informe um e-mail válido.";return}
+ 
  erro.textContent="";
  var btn=document.getElementById("enviar");btn.disabled=true;btn.textContent="Agendando...";
  var origem=parceiro||"direto";
- var corpo={servico:sel.svc.id,data:sel.data,hora:sel.hora,nome:nome,tel:tel,rua:rua,num:numComp,cep:cep,bairro:bairro,cidade:cidade,mail:mail,parceiro:parceiro};
+ var corpo={servico:sel.svc.id,data:sel.data,hora:sel.hora,nome:nome,tel:tel,rua:rua,num:numComp,cep:cep,bairro:bairro,cidade:cidade,mail:"",parceiro:parceiro};
  fetch(API,{method:"POST",body:JSON.stringify(corpo)}).then(function(r){return r.json()}).then(function(j){
   if(!j.ok){
    btn.disabled=false;btn.textContent="Agendar";
@@ -209,7 +208,7 @@ document.getElementById("enviar").addEventListener("click",function(){
   }
   var cod=j.codigo;
   var linhas=[["Código",cod],["Parceiro",origem],["Serviço",sel.svc.nome],["Valor",brl(sel.svc.preco)],["Data",br(sel.data)],["Horário",sel.hora],["Cliente",nome],["Status","agendado"]];
-  var msg="Olá, Biklean! Acabei de fazer um agendamento pelo site:\n\nCódigo: "+cod+"\nServiço: "+sel.svc.nome+"\nValor: "+brl(sel.svc.preco)+"\nDuração: "+sel.svc.dur+"\nData: "+br(sel.data)+"\nHorário: "+sel.hora+"\nNome: "+nome+"\nTelefone: "+tel+"\nEndereço: "+end+"\nE-mail: "+mail+"\nParceiro: "+origem;
+  var msg="Olá, Biklean! Acabei de fazer um agendamento pelo site:\n\nCódigo: "+cod+"\nServiço: "+sel.svc.nome+"\nValor: "+brl(sel.svc.preco)+"\nDuração: "+sel.svc.dur+"\nData: "+br(sel.data)+"\nHorário: "+sel.hora+"\nNome: "+nome+"\nTelefone: "+tel+"\nEndereço: "+end+"\nParceiro: "+origem;
   document.getElementById("wa").href="https://wa.me/"+WHATS+"?text="+encodeURIComponent(msg);
   document.getElementById("resumo").textContent=sel.svc.nome+", "+br(sel.data)+" às "+sel.hora+". Código "+cod+".";
   var t=document.getElementById("linha");t.textContent="";
